@@ -157,7 +157,7 @@ export async function deleteProduct(id: string): Promise<void> {
     if (productData) {
       const { error: updateError } = await supabase
         .from('products')
-        .update({ display_order: supabase.raw('display_order - 1') })
+        .update({ display_order: `display_order - 1` })
         .gte('display_order', productData.display_order);
 
       if (updateError) throw updateError;
