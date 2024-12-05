@@ -13,6 +13,7 @@ interface ImageUploadProps {
 }
 
 const { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } = STORAGE_CONFIG;
+type AcceptedFileType = typeof ACCEPTED_FILE_TYPES[number];
 
 export default function ImageUpload({
   onImageUpload,
@@ -27,7 +28,7 @@ export default function ImageUpload({
   const validateFile = (file: File): boolean => {
     setError(null);
 
-    if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
+    if (!ACCEPTED_FILE_TYPES.includes(file.type as AcceptedFileType)) {
       setError('Please upload a JPG, PNG, or GIF file');
       return false;
     }

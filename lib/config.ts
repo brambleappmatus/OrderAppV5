@@ -3,7 +3,7 @@ export const STORAGE_CONFIG = {
   FOLDER_NAME: 'products',
   FALLBACK_IMAGE_URL: 'https://github.com/brambleappmatus/images/blob/main/placeholder.png?raw=true',
   MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
-  ACCEPTED_FILE_TYPES: ['image/jpeg', 'image/png', 'image/gif']
+  ACCEPTED_FILE_TYPES: ['image/jpeg', 'image/png', 'image/gif'] as const
 } as const;
 
 export const SUPABASE_CONFIG = {
