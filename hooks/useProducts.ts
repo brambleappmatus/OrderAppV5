@@ -2,15 +2,15 @@ import { useEffect, useCallback } from 'react';
 import { useStore } from '@/store/useStore';
 
 export function useProducts() {
-  const { products, initializeProducts } = useStore();
-
-  const initProducts = useCallback(async () => {
-    await initializeProducts();
-  }, [initializeProducts]);
+  const { products, refreshProducts } = useStore();
 
   useEffect(() => {
-    initProducts();
-  }, [initProducts]);
+    refreshProducts();
+  }, [refreshProducts]);
 
-  return { products };
+  const refresh = useCallback(async () => {
+    await refreshProducts();
+  }, [refreshProducts]);
+
+  return { products, refreshProducts: refresh };
 }
