@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.474.0",
     "@hello-pangea/dnd": "^16.3.0",
     "@heroicons/react": "^2.0.18",
     "@supabase/supabase-js": "^2.39.0",
