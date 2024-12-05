@@ -13,6 +13,8 @@ export interface Database {
           fats: number;
           carbs: number;
           created_at: string;
+          display_order: number;
+          hidden: boolean;
         };
         Insert: {
           id?: string;
@@ -25,6 +27,8 @@ export interface Database {
           fats: number;
           carbs: number;
           created_at?: string;
+          display_order?: number;
+          hidden?: boolean;
         };
         Update: {
           id?: string;
@@ -37,6 +41,8 @@ export interface Database {
           fats?: number;
           carbs?: number;
           created_at?: string;
+          display_order?: number;
+          hidden?: boolean;
         };
       };
     };
