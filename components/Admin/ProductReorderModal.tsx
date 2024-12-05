@@ -54,7 +54,7 @@ export default function ProductReorderModal({ onClose }: ProductReorderModalProp
                 className="flex-grow overflow-y-auto"
               >
                 {orderedProducts.map((product, index) => (
-                  <Draggable key={product.id} draggableId={product.id.toString()} index={index}>
+                  <Draggable key={product.id} draggableId={String(product.id)} index={index}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
@@ -76,7 +76,6 @@ export default function ProductReorderModal({ onClose }: ProductReorderModalProp
                               const target = e.target as HTMLImageElement;
                               target.src = 'https://github.com/brambleappmatus/images/blob/main/placeholder.png?raw=true';
                             }}
-                            unoptimized
                           />
                         </div>
                         

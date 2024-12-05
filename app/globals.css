@@ -26,7 +26,7 @@ body {
 }
 
 .products-container {
-  height: calc(100vh - 6.5rem);
+  height: calc(100vh - 8rem);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -35,32 +35,32 @@ body {
 }
 
 .products-container::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
 }
 
 .products-container::-webkit-scrollbar-track {
   background: var(--scrollbar-track);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .products-container::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-thumb);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 /* Global scrollbar styles */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
   background: var(--scrollbar-track);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-thumb);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 /* Firefox scrollbar styles */
@@ -74,7 +74,7 @@ body {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: 0.25rem 0.25rem 0 0;
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .transform-gpu {
