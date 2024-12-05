@@ -4,7 +4,6 @@ export interface Product {
   price: number;
   description: string;
   imageUrl: string;
-  imagePath: string | null;
   kcal: number;
   protein: number;
   fats: number;
@@ -14,9 +13,4 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number;
-}
-
-export interface ProductImage {
-  url: string;
-  path: string;
 }

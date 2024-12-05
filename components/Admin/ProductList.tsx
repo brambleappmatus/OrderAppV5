@@ -1,20 +1,19 @@
+'use client';
+
 import React from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Product } from '@/types/product';
 import Image from 'next/image';
 import { PencilIcon, TrashIcon, DocumentDuplicateIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { STORAGE_CONFIG } from '@/lib/config';
 
 interface ProductListProps {
   products: Product[];
   onReorder: (products: Product[]) => void;
   onEdit: (product: Product) => void;
-  onDelete: (productId: string, imagePath: string | null) => void;
+  onDelete: (productId: string) => void;
   onDuplicate: (product: Product) => void;
   onToggleVisibility: (product: Product) => void;
 }
-
-const { FALLBACK_IMAGE_URL } = STORAGE_CONFIG;
 
 export default function ProductList({ 
   products, 
@@ -50,7 +49,7 @@ export default function ProductList({
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {products.map((product, index) => (
-              <Draggable key={product.id} draggableId={product.id.toString()} index={index}>
+              <Draggable key={product.id} draggableId={String(product.id)} index={index}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
@@ -61,7 +60,7 @@ export default function ProductList({
                     }`}
                   >
                     <div className="relative h-48 w-full">
-                      {!product.imageUrl || imageErrors[product.id] ? (
+                      {imageErrors[product.id] ? (
                         <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-zinc-700">
                           <span className="text-gray-400 dark:text-zinc-500">Image not available</span>
                         </div>
@@ -72,7 +71,6 @@ export default function ProductList({
                           fill
                           className="object-cover"
                           onError={() => handleImageLoadError(product.id)}
-                          unoptimized
                         />
                       )}
                     </div>
@@ -105,7 +103,7 @@ export default function ProductList({
                           <PencilIcon className="h-5 w-5" />
                         </button>
                         <button
-                          onClick={() => onDelete(product.id, product.imagePath)}
+                          onClick={() => onDelete(product.id)}
                           className="p-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-zinc-700 rounded-lg transition-colors"
                         >
                           <TrashIcon className="h-5 w-5" />

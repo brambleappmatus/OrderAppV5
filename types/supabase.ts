@@ -7,7 +7,7 @@ export interface Database {
           product_name: string;
           price: number;
           description: string;
-          image_path: string | null;
+          image_url: string;
           calories: number;
           protein: number;
           fats: number;
@@ -21,7 +21,7 @@ export interface Database {
           product_name: string;
           price: number;
           description: string;
-          image_path?: string | null;
+          image_url: string;
           calories: number;
           protein: number;
           fats: number;
@@ -35,7 +35,7 @@ export interface Database {
           product_name?: string;
           price?: number;
           description?: string;
-          image_path?: string | null;
+          image_url?: string;
           calories?: number;
           protein?: number;
           fats?: number;
