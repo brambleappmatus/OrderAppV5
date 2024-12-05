@@ -1,7 +1,6 @@
 import { StateCreator } from 'zustand';
 import { Product } from '@/types/product';
-import { createProduct, updateProduct, deleteProduct, fetchProducts } from '@/lib/products';
-import { handleDatabaseError } from '@/utils/error-handling';
+import { createProduct, updateProduct, deleteProduct, fetchProducts, reorderProducts as reorderProductsInDb } from '@/lib/products';
 import toast from 'react-hot-toast';
 
 export interface ProductState {
@@ -10,11 +9,11 @@ export interface ProductState {
   editProduct: (product: Product) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   duplicateProduct: (product: Product) => Promise<void>;
-  reorderProducts: (products: Product[]) => void;
+  reorderProducts: (products: Product[]) => Promise<void>;
   toggleProductVisibility: (product: Product) => Promise<void>;
 }
 
-export const productReducer: StateCreator<ProductState, [], [], ProductState> = (set, get) => ({
+export const productReducer: StateCreator<ProductState, [], [], ProductState> = (set, get, api) => ({
   products: [],
 
   addProduct: async (product) => {
@@ -23,9 +22,10 @@ export const productReducer: StateCreator<ProductState, [], [], ProductState> = 
       set((state) => ({
         products: [...state.products, newProduct]
       }));
+      toast.success('Product added successfully');
     } catch (error) {
-      const errorMessage = handleDatabaseError(error);
-      toast.error(errorMessage);
+      console.error('Error adding product:', error);
+      toast.error('Failed to add product');
       throw error;
     }
   },
@@ -40,8 +40,8 @@ export const productReducer: StateCreator<ProductState, [], [], ProductState> = 
       }));
       toast.success('Product updated successfully');
     } catch (error) {
-      const errorMessage = handleDatabaseError(error);
-      toast.error(errorMessage);
+      console.error('Error editing product:', error);
+      toast.error('Failed to update product');
       throw error;
     }
   },
@@ -54,8 +54,8 @@ export const productReducer: StateCreator<ProductState, [], [], ProductState> = 
       }));
       toast.success('Product deleted successfully');
     } catch (error) {
-      const errorMessage = handleDatabaseError(error);
-      toast.error(errorMessage);
+      console.error('Error deleting product:', error);
+      toast.error('Failed to delete product');
       throw error;
     }
   },
@@ -72,14 +72,22 @@ export const productReducer: StateCreator<ProductState, [], [], ProductState> = 
       }));
       toast.success('Product duplicated successfully');
     } catch (error) {
-      const errorMessage = handleDatabaseError(error);
-      toast.error(errorMessage);
+      console.error('Error duplicating product:', error);
+      toast.error('Failed to duplicate product');
       throw error;
     }
   },
 
-  reorderProducts: (products) => {
-    set({ products });
+  reorderProducts: async (products) => {
+    try {
+      await reorderProductsInDb(products);
+      set({ products });
+      toast.success('Products reordered successfully');
+    } catch (error) {
+      console.error('Error reordering products:', error);
+      toast.error('Failed to reorder products');
+      throw error;
+    }
   },
 
   toggleProductVisibility: async (product) => {
@@ -96,8 +104,8 @@ export const productReducer: StateCreator<ProductState, [], [], ProductState> = 
       }));
       toast.success(updatedProduct.hidden ? 'Product hidden' : 'Product visible');
     } catch (error) {
-      const errorMessage = handleDatabaseError(error);
-      toast.error(errorMessage);
+      console.error('Error toggling product visibility:', error);
+      toast.error('Failed to update product visibility');
       throw error;
     }
   },
