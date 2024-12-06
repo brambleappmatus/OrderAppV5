@@ -25,8 +25,8 @@ export default function CartTimeoutWarning() {
     };
 
     const startCountdown = () => {
-      const newTimeoutId = setTimeout(() => {
-        clearCart();
+      const newTimeoutId = setTimeout(async () => {
+        await clearCart();
         setShowWarning(false);
       }, 10000); // 10 seconds
       setTimeoutId(newTimeoutId);

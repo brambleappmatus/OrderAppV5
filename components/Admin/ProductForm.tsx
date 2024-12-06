@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { useStore } from '@/store/useStore';
 import { Product } from '@/types/product';
@@ -104,10 +102,11 @@ export default function ProductForm({ editingProduct, onComplete }: ProductFormP
       return;
     }
 
-    const productData = {
+    const price = parseFloat(formData.price);
+    const productData: Product = {
       id: editingProduct?.id || Date.now().toString(),
       name: formData.name,
-      price: parseFloat(formData.price),
+      price,
       description: formData.description,
       imageUrl: formData.imageUrl,
       imagePath: formData.imagePath,
@@ -115,7 +114,8 @@ export default function ProductForm({ editingProduct, onComplete }: ProductFormP
       protein: parseInt(formData.protein),
       fats: parseInt(formData.fats),
       carbs: parseInt(formData.carbs),
-      hidden: editingProduct?.hidden || false
+      hidden: editingProduct?.hidden || false,
+      charityAmount: price * 0.1 // Calculate charity amount as 10% of price
     };
 
     try {

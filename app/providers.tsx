@@ -3,9 +3,20 @@
 import { Toaster } from 'react-hot-toast';
 import ThemeProvider from '@/components/Layout/ThemeProvider';
 import { useSupabase } from '@/hooks/useSupabase';
+import { useEffect } from 'react';
+import { scheduleCartCleanup, stopCartCleanup } from '@/lib/cartCleanup';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const { isInitialized, error } = useSupabase();
+
+  useEffect(() => {
+    const interval = scheduleCartCleanup(15); // Run every 15 minutes
+    
+    return () => {
+      stopCartCleanup();
+      clearInterval(interval);
+    };
+  }, []);
 
   if (error) {
     return (

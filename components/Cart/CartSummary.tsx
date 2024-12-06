@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { useStore } from '@/store/useStore';
 import Image from 'next/image';
@@ -8,19 +6,25 @@ import { CreditCardIcon, HeartIcon, TrashIcon } from '@heroicons/react/24/outlin
 export default function CartSummary() {
   const { cart, removeFromCart, updateCartItemQuantity, translations } = useStore();
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shelterDonation = total * 0.1; // 10% of total
+  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const shelterDonation = cart.reduce((sum, item) => sum + (item.charity_amount || 0), 0);
 
   // Calculate total macros
   const totalMacros = cart.reduce((acc, item) => ({
-    kcal: acc.kcal + (item.kcal * item.quantity),
-    protein: acc.protein + (item.protein * item.quantity),
-    fats: acc.fats + (item.fats * item.quantity),
-    carbs: acc.carbs + (item.carbs * item.quantity)
+    kcal: acc.kcal + ((item.kcal || 0) * (item.quantity || 0)),
+    protein: acc.protein + ((item.protein || 0) * (item.quantity || 0)),
+    fats: acc.fats + ((item.fats || 0) * (item.quantity || 0)),
+    carbs: acc.carbs + ((item.carbs || 0) * (item.quantity || 0))
   }), { kcal: 0, protein: 0, fats: 0, carbs: 0 });
 
   const handlePaymentClick = () => {
     window.open('https://revolut.me/attymatty', '_blank');
+  };
+
+  const handleQuantityChange = async (cartItemId: string, newQuantity: number) => {
+    if (newQuantity > 0) {
+      await updateCartItemQuantity(cartItemId, newQuantity);
+    }
   };
 
   return (
@@ -31,14 +35,14 @@ export default function CartSummary() {
             <div key={item.id} className="flex items-center justify-between bg-gray-50 dark:bg-zinc-800/50 p-2 rounded-lg">
               <div className="flex-grow min-w-0 mr-2">
                 <p className="font-medium text-gray-800 dark:text-white text-sm truncate">{item.name}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">€{item.price.toFixed(2)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">€{(item.price || 0).toFixed(2)}</p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <input
                   type="number"
                   min="1"
-                  value={item.quantity}
-                  onChange={(e) => updateCartItemQuantity(item.id, parseInt(e.target.value))}
+                  value={item.quantity || 1}
+                  onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value, 10) || 1)}
                   className="w-12 p-1 text-sm border rounded dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
                 />
                 <button

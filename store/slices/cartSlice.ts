@@ -1,26 +1,54 @@
-import { Product, CartItem } from '@/types/product';
+import { Product } from '@/types/product';
+import { CartItem, AddToCartData } from '@/types/cart';
 import { StateCreator } from 'zustand';
 import toast from 'react-hot-toast';
 import { getRandomMessage, addToCartMessages, removeFromCartMessages } from '@/utils/toastMessages';
+import { addToCart, fetchCartItems, updateCartItemQuantity, removeFromCart, clearCart as clearCartInDb } from '@/lib/cart';
+import { cartManager } from '@/lib/cartManager';
 
 export interface CartState {
   cart: CartItem[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (productId: string) => void;
-  updateCartItemQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void;
+  isLoading: boolean;
+  addToCart: (product: Product, quantity?: number) => Promise<void>;
+  removeFromCart: (cartItemId: string) => Promise<void>;
+  updateCartItemQuantity: (cartItemId: string, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
+  refreshCart: () => Promise<void>;
 }
 
-export const cartReducer: StateCreator<CartState, [], [], CartState> = (set, get, api) => ({
+export const cartReducer: StateCreator<CartState, [], [], CartState> = (set, get) => ({
   cart: [],
+  isLoading: false,
+
+  refreshCart: async () => {
+    try {
+      set({ isLoading: true });
+      const cartItems = await fetchCartItems();
+      set({ cart: cartItems, isLoading: false });
+    } catch (error) {
+      console.error('Error refreshing cart:', error);
+      set({ isLoading: false });
+      toast.error('Failed to refresh cart');
+    }
+  },
   
-  addToCart: (product) => 
-    set((state) => {
-      const existingItem = state.cart.find((item) => item.id === product.id);
-      const donation = (product.price * 0.1).toFixed(2);
-      
+  addToCart: async (product, quantity = 1) => {
+    try {
+      set({ isLoading: true });
+      const cartData: AddToCartData = {
+        cart_id: cartManager.getCartId() || '',
+        product_id: product.id,
+        product_name: product.name,
+        quantity,
+        price: product.price * quantity,
+        charity_amount: product.price * 0.1 * quantity
+      };
+
+      await addToCart(cartData);
+      await get().refreshCart();
+
       toast.success(
-        `${getRandomMessage(addToCartMessages)} (+€${donation} to shelter 💝)`,
+        `${getRandomMessage(addToCartMessages)} (+€${cartData.charity_amount.toFixed(2)} to shelter 💝)`,
         {
           duration: 3000,
           style: {
@@ -30,47 +58,56 @@ export const cartReducer: StateCreator<CartState, [], [], CartState> = (set, get
           },
         }
       );
-      
-      if (existingItem) {
-        return {
-          cart: state.cart.map((item) =>
-            item.id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          ),
-        };
-      }
-      return { cart: [...state.cart, { ...product, quantity: 1 }] };
-    }),
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      set({ isLoading: false });
+      toast.error('Failed to add item to cart');
+    }
+  },
 
-  removeFromCart: (productId) =>
-    set((state) => {
-      const item = state.cart.find((i) => i.id === productId);
-      if (item) {
-        const lostDonation = (item.price * item.quantity * 0.1).toFixed(2);
-        toast.error(
-          `${getRandomMessage(removeFromCartMessages)} (-€${lostDonation} lost from shelter 💔)`,
-          {
-            duration: 3000,
-            style: {
-              background: 'var(--toast-bg)',
-              color: 'var(--toast-color)',
-              border: '1px solid #fee2e2',
-            },
-          }
-        );
-      }
-      return {
-        cart: state.cart.filter((item) => item.id !== productId),
-      };
-    }),
+  removeFromCart: async (cartItemId) => {
+    try {
+      set({ isLoading: true });
+      await removeFromCart(cartItemId);
+      await get().refreshCart();
 
-  updateCartItemQuantity: (productId, quantity) =>
-    set((state) => ({
-      cart: state.cart.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
-      ),
-    })),
+      toast.error(
+        `${getRandomMessage(removeFromCartMessages)}`,
+        {
+          duration: 3000,
+          style: {
+            background: 'var(--toast-bg)',
+            color: 'var(--toast-color)',
+            border: '1px solid #fee2e2',
+          },
+        }
+      );
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      set({ isLoading: false });
+      toast.error('Failed to remove item from cart');
+    }
+  },
 
-  clearCart: () => set({ cart: [] }),
+  updateCartItemQuantity: async (cartItemId, quantity) => {
+    try {
+      set({ isLoading: true });
+      await updateCartItemQuantity(cartItemId, quantity);
+      await get().refreshCart();
+    } catch (error) {
+      console.error('Error updating cart item quantity:', error);
+      set({ isLoading: false });
+      toast.error('Failed to update quantity');
+    }
+  },
+
+  clearCart: async () => {
+    try {
+      await clearCartInDb();
+      set({ cart: [] });
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      toast.error('Failed to clear cart');
+    }
+  },
 });
