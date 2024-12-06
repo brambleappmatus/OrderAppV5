@@ -27,12 +27,18 @@ export class CartManager {
         .single();
 
       if (error) throw error;
+      if (!data) throw new Error('Failed to create cart');
       
       this.cartId = data.id;
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && this.cartId) {
         localStorage.setItem('cartId', this.cartId);
       }
     }
+
+    if (!this.cartId) {
+      throw new Error('Failed to initialize cart');
+    }
+
     return this.cartId;
   }
 
@@ -45,6 +51,8 @@ export class CartManager {
       .single();
 
     if (error) throw error;
+    if (!data) throw new Error('Cart not found');
+    
     return data;
   }
 
@@ -52,20 +60,24 @@ export class CartManager {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    await supabase
+    const { error } = await supabase
       .from('carts')
       .delete()
       .eq('is_guest', true)
       .lt('updated_at', thirtyDaysAgo.toISOString());
+
+    if (error) throw error;
   }
 
   async updateCartTimestamp(): Promise<void> {
-    if (this.cartId) {
-      await supabase
-        .from('carts')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', this.cartId);
-    }
+    if (!this.cartId) return;
+
+    const { error } = await supabase
+      .from('carts')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', this.cartId);
+
+    if (error) throw error;
   }
 
   getCartId(): string | null {
