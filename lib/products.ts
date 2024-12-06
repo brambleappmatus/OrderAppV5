@@ -23,7 +23,8 @@ export async function fetchProducts(): Promise<Product[]> {
       protein: item.protein,
       fats: item.fats,
       carbs: item.carbs,
-      hidden: item.hidden || false
+      hidden: item.hidden || false,
+      charityAmount: item.charity_amount || 0
     }));
   } catch (error) {
     console.error('Error in fetchProducts:', error);
@@ -44,6 +45,8 @@ export async function createProduct(product: Omit<Product, 'id' | 'imageUrl'>): 
       ? (maxOrderData[0].display_order || 0) + 1 
       : 1;
 
+    const charityAmount = product.price * 0.1;
+
     // Insert the new product
     const { data, error } = await supabase
       .from('products')
@@ -57,7 +60,8 @@ export async function createProduct(product: Omit<Product, 'id' | 'imageUrl'>): 
         fats: product.fats,
         carbs: product.carbs,
         display_order: nextOrder,
-        hidden: false
+        hidden: false,
+        charity_amount: charityAmount
       }])
       .select()
       .single();
@@ -76,7 +80,8 @@ export async function createProduct(product: Omit<Product, 'id' | 'imageUrl'>): 
       protein: data.protein,
       fats: data.fats,
       carbs: data.carbs,
-      hidden: data.hidden || false
+      hidden: data.hidden || false,
+      charityAmount: data.charity_amount || 0
     };
   } catch (error) {
     console.error('Error in createProduct:', error);
@@ -86,6 +91,8 @@ export async function createProduct(product: Omit<Product, 'id' | 'imageUrl'>): 
 
 export async function updateProduct(product: Product): Promise<void> {
   try {
+    const charityAmount = product.price * 0.1;
+
     const { error } = await supabase
       .from('products')
       .update({
@@ -97,7 +104,8 @@ export async function updateProduct(product: Product): Promise<void> {
         protein: product.protein,
         fats: product.fats,
         carbs: product.carbs,
-        hidden: product.hidden
+        hidden: product.hidden,
+        charity_amount: charityAmount
       })
       .eq('id', product.id);
 
@@ -135,7 +143,8 @@ export async function reorderProducts(products: Product[]): Promise<void> {
       fats: product.fats,
       carbs: product.carbs,
       display_order: index + 1,
-      hidden: product.hidden || false
+      hidden: product.hidden || false,
+      charity_amount: product.charityAmount
     }));
 
     const { error } = await supabase

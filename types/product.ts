@@ -10,6 +10,7 @@ export interface Product {
   fats: number;
   carbs: number;
   hidden?: boolean;
+  charityAmount: number;
 }
 
 export interface CartItem extends Product {
