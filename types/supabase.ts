@@ -51,6 +51,7 @@ export interface Database {
       cart: {
         Row: {
           id: string;
+          cart_id: string;
           product_id: string;
           product_name: string;
           user_id: string | null;
@@ -61,6 +62,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          cart_id: string;
           product_id: string;
           product_name: string;
           user_id?: string | null;
@@ -71,6 +73,7 @@ export interface Database {
         };
         Update: {
           id?: string;
+          cart_id?: string;
           product_id?: string;
           product_name?: string;
           user_id?: string | null;
@@ -78,6 +81,29 @@ export interface Database {
           price?: number;
           charity_amount?: number;
           added_at?: string;
+        };
+      };
+      carts: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          is_guest: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          is_guest?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          is_guest?: boolean;
+          created_at?: string;
+          updated_at?: string;
         };
       };
     };

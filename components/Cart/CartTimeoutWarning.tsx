@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useStore } from '@/store/useStore';
-import { supabase } from '@/lib/supabase';
 
 export default function CartTimeoutWarning() {
   const { cart, clearCart } = useStore();
@@ -13,22 +12,6 @@ export default function CartTimeoutWarning() {
 
   useEffect(() => {
     let activityTimeout: NodeJS.Timeout;
-
-    const clearCartFromDatabase = async () => {
-      try {
-        const { error } = await supabase
-          .from('cart')
-          .delete()
-          .neq('id', '0'); // Delete all cart items
-        
-        if (error) throw error;
-        
-        clearCart(); // Clear the UI state
-        setShowWarning(false);
-      } catch (error) {
-        console.error('Error clearing cart from database:', error);
-      }
-    };
 
     const resetTimeout = () => {
       if (activityTimeout) clearTimeout(activityTimeout);
@@ -43,7 +26,8 @@ export default function CartTimeoutWarning() {
 
     const startCountdown = () => {
       const newTimeoutId = setTimeout(async () => {
-        await clearCartFromDatabase();
+        await clearCart();
+        setShowWarning(false);
       }, 10000); // 10 seconds
       setTimeoutId(newTimeoutId);
 
