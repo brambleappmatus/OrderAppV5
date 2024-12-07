@@ -43,11 +43,11 @@ export const en = {
       title: 'Shopping Cart',
       total: 'Total',
       tapToPay: 'Tap to use ApplePay, GooglePay or Card',
-      scanToPay: 'Scan the QR code to pay',
+      scanToPay: 'Scan QR to pay',
       shelterDonation: {
         title: 'Shelter Donation',
-        description: 'Every purchase helps shelter pets find their forever homes.',
-        amount: 'will be donated'
+        description: 'Helping shelter pets find homes',
+        amount: 'donated'
       },
       macros: {
         kcal: 'kcal',

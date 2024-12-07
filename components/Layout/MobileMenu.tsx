@@ -49,43 +49,43 @@ export default function MobileMenu() {
         />
       )}
 
-      <div className={`fixed top-0 left-0 h-full w-80 bg-white dark:bg-zinc-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 border-r border-gray-200 dark:border-zinc-700 ${
+      <div className={`fixed top-0 left-0 h-full w-40 bg-white dark:bg-zinc-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 border-r border-gray-200 dark:border-zinc-700 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="p-4 flex flex-col h-full">
+        <div className="p-2 flex flex-col h-full">
           <button
             onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4"
+            className="absolute top-2 right-2"
             aria-label={translations.shop.close}
           >
-            <XMarkIcon className="h-6 w-6 text-gray-600 dark:text-zinc-300" />
+            <XMarkIcon className="h-5 w-5 text-gray-600 dark:text-zinc-300" />
           </button>
 
-          <div className="mt-12 flex-grow">
-            <div className="border-b border-gray-200 dark:border-zinc-700 pb-4 mb-4">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+          <div className="mt-8 flex-grow">
+            <div className="border-b border-gray-200 dark:border-zinc-700 pb-2 mb-2">
+              <h1 className="text-lg font-bold text-gray-900 dark:text-white">
                 SnackShack
               </h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-[10px] text-gray-500 dark:text-gray-400">
                 Treats with Purpose 🐾
               </p>
             </div>
             <CartSummary />
           </div>
           
-          <div className="mt-2">
+          <div>
             <button 
               onClick={handleNavigation}
-              className="w-full flex items-center gap-2 p-2.5 bg-gray-100 dark:bg-zinc-700/50 text-gray-700 dark:text-zinc-300 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+              className="w-full flex items-center gap-1 py-1 px-2 bg-gray-100 dark:bg-zinc-700/50 text-gray-700 dark:text-zinc-300 rounded text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
             >
               {isAdmin ? (
                 <>
-                  <ShoppingBagIcon className="h-5 w-5" />
+                  <ShoppingBagIcon className="h-3.5 w-3.5" />
                   <span>{translations.shop.backToShop}</span>
                 </>
               ) : (
                 <>
-                  <Cog6ToothIcon className="h-5 w-5" />
+                  <Cog6ToothIcon className="h-3.5 w-3.5" />
                   <span>{translations.shop.adminPanel}</span>
                 </>
               )}

@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import ProductCard from './ProductCard';
 import { Product } from '@/types/product';
@@ -12,7 +10,7 @@ interface ProductGridProps {
 export default function ProductGrid({ products, onProductClick }: ProductGridProps) {
   return (
     <div className="products-container">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2.5 p-1">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2.5 p-1">
         {products.map((product) => (
           <ProductCard
             key={product.id}

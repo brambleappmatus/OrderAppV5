@@ -12,13 +12,13 @@ interface ClientLayoutProps {
 export default function ClientLayout({ children, inter }: ClientLayoutProps) {
   return (
     <div className={`${inter.className} bg-white dark:bg-zinc-900`}>
-      <div className="md:hidden">
+      <div className="xs:hidden">
         <MobileMenu />
       </div>
-      <div className="hidden md:block">
+      <div className="hidden xs:block">
         <SideMenu />
       </div>
-      <main className="min-h-screen md:ml-64 transition-all duration-300">
+      <main className="min-h-screen xs:ml-sidebar transition-all duration-300">
         {children}
       </main>
     </div>
